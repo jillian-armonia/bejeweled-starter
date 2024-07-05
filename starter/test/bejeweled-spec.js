@@ -137,6 +137,7 @@ describe ('Bejeweled', function () {
               ['🍇', '🥥', '🥝', '🍋', '🍊', '🍓', '🥥', '🍊'],
               ['🍋', '🍓', '🍇', '🍓', '🍋', '🍇', '🍋', '🥥']]
 
+      expect(Bejeweled.checkForMatches(grid)).to.be.false;
       expect(Bejeweled.validMoves(grid)).to.be.false;
 
     });

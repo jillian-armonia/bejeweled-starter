@@ -2,6 +2,7 @@ const { expect } = require('chai');
 
 const Cursor = require("../class/cursor.js");
 const Screen = require("../class/screen.js");
+const Bejeweled = require('../class/bejeweled.js')
 const { it } = require('mocha');
 
 describe ('Cursor', function () {
@@ -68,8 +69,56 @@ describe ('Cursor', function () {
 
   it('indicates an item has been selected', function(){
 
-    
-  })
+    let grid = [['🥥', '🍋', '🍊'],
+                ['🍓', '🍇', '🍓'],
+                ['🥥', '🍋', '🍊']]
+
+    cursor.select();
+    expect(cursor.swapMode).to.be.true;
+    expect(Bejeweled.selectFruit(grid)).to.be.equal({row: 0, col: 0});
+  });
+
+  it('can only move one space from the selected item when swapping', function(){
+
+    cursor.swapMode = true;
+
+    cursor.right();
+    expect([cursor.row, cursor.col]).to.deep.equal([0, 1]);
+
+    cursor.right();
+    expect([cursor.row, cursor.col]).to.deep.equal([0, 1]);
+  });
+
+  it('processes the swap if it is a match', function(){
+
+    let grid = [['🍓', '🥥', '🍊'],
+                ['🥥', '🍇', '🥥'],
+                ['🥥', '🍊', '🍊'],]
+
+    cursor.swapMode = true;
+    cursor.select();
+    Bejeweled.selectFruit(grid); //{row: 0, col: 0}
+
+    cursor.swap(); //swap with the coconut on the right
+    expect(Bejeweled.checkForMatches(grid)).to.be.true;
+    expect(cursor.swapMode).to.be.false;
+    expect(grid[0][0]).to.be.equal(' ');
+  });
+
+  it('should throw an error if it is not a match', function(){
+
+    let grid = [['🥥', '🍋', '🍊'],
+                ['🍓', '🍇', '🍓'],
+                ['🥥', '🍋', '🍊']]
+
+    cursor.swapMode = true;
+    cursor.select();
+    Bejeweled.selectFruit(grid); //{row: 0, col: 0}
+
+    cursor.swap(); //swap with the lemon on the left
+    expect(Bejeweled.checkForMatches(grid)).to.be.false;
+    expect(cursor.swap()).to.throw(Error, 'No match');
+  });
 
 
 });
