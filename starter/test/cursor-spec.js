@@ -2,6 +2,7 @@ const { expect } = require('chai');
 
 const Cursor = require("../class/cursor.js");
 const Screen = require("../class/screen.js");
+const { it } = require('mocha');
 
 describe ('Cursor', function () {
 
@@ -65,7 +66,10 @@ describe ('Cursor', function () {
     expect([cursor.row, cursor.col]).to.deep.equal([0, 0]);
   });
 
+  it('indicates an item has been selected', function(){
+
+    
+  })
 
 
 });
-
