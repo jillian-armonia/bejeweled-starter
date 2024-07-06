@@ -66,10 +66,9 @@ describe ('Bejeweled', function () {
       })
     })
 
-  // Add tests for swaps that set up combos
-  describe('4 and 5 Combo Tests', function(){
+  describe('4 and 5 Match Tests', function(){
 
-    it('should recognize a 4-combo horizontal match', function(){
+    it('should recognize a 4 horizontal match', function(){
 
       grid = [['🥥', '🍋', '🍊', '🍇'],
               ['🍓', '🍓', '🍓', '🍓']]
@@ -80,7 +79,7 @@ describe ('Bejeweled', function () {
 
     });
 
-    it('should recognize a 5-combo horizontal match', function(){
+    it('should recognize a 5 horizontal match', function(){
 
       grid = [['🥥', '🍋', '🍊', '🍇', '🥥'],
               ['🍓', '🍓', '🍓', '🍓', '🍓']]
@@ -91,7 +90,7 @@ describe ('Bejeweled', function () {
 
     });
 
-    it('should recognize a 4-combo vertical match', function(){
+    it('should recognize a 4 vertical match', function(){
 
       grid = [['🍓', '🍊', '🍊'],
               ['🥥', '🍇', '🥥'],
@@ -105,7 +104,7 @@ describe ('Bejeweled', function () {
 
     });
 
-    it('should recognize a 5-combo vertical match', function(){
+    it('should recognize a 5 vertical match', function(){
 
       grid = [['🍓', '🍊', '🍊'],
               ['🥥', '🍇', '🥥'],
@@ -122,6 +121,49 @@ describe ('Bejeweled', function () {
 
   })
 
+  // Add tests for swaps that set up combos
+  //When the fruits fall down and make a new match, it registers as a combo
+  describe('Combo Tests', function(){
+
+    //1. Existing fruits should shift down to the blank spaces left by matched fruits
+    it('should shift fruits down to the empty spaces', function(){
+
+      grid = [['🥥', '🍋', '🍊'],
+              [' ', ' ', ' ']]
+
+      Bejeweled.shiftFruits(grid);
+      expect([grid[1][0], grid[1][1], grid[1][2]]).to.be.equal(['🥥', '🍋', '🍊']);
+    });
+
+    //2. When the shifted fruits make a match, add it to the combo counter
+    it('should recognize combos when fruits fall to make a match', function(){
+
+      grid = [['🍓', '🍊', '🍊'],
+              ['🥥', '🍇', '🥥'],
+              ['🥥', '🥥', '🍊'],
+              ['🥥', '🍓', '🍓']]
+
+      Bejeweled.checkForMatches(grid); //true
+      Bejeweled.deleteFruits(grid); //delete coconut matched fruits
+      Bejeweled.shiftFruits(grid); //shift strawberry to grid[3][0]
+      expect(Bejeweled.checkForCombos(grid)).to.be.true;
+      expect(Bejeweled.getCombo()).to.deep.equal(1);
+
+    });
+
+    //3. If there are no more extra matches after putting new fruits, reset the combo counter
+    it('should reset the combo counter after all empty spaces are filled', function(){
+
+      grid = [['🍓', '🍊', '🍊'],
+              ['🥥', '🥝', '🥥'],
+              ['🥝', '🥥', '🍊'],
+              ['🥥', '🍇', '🍋']]
+
+      expect(Bejeweled.checkForMatches(grid)).to.be.false;
+      expect(Bejeweled.getCombo()).to.deep.equal(0);
+    })
+
+  })
 
   // Add tests to check if there are no possible valid moves
   describe('Game Over Tests', function(){
