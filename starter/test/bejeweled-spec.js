@@ -38,7 +38,6 @@ describe ('Bejeweled', function () {
 
 
   // Add tests for a valid swap that matches 3 fruits
-    //If there is a 3-item combo, checkForMatches(grid) should return true
     describe('3-Match Tests', function(){
 
       it('should recognize a horizontal match', function(){
@@ -46,9 +45,9 @@ describe ('Bejeweled', function () {
         grid = [['🥥', '🍋', '🍊'],
                 ['🍓', '🍓', '🍓']]
 
-        expect(Bejeweled.checkForMatches(grid)).to.be.true;
+        expect(Bejeweled.checkForMatches(grid)).to.deep.equal([{row: 1, col: 0}, {row: 1, col: 1}, {row: 1, col: 2}]);
         Bejeweled.deleteFruits(grid);
-        expect([grid[1][0], grid[1][1], grid[1][2]]).to.be.equal([' ', ' ', ' ']);
+        expect([grid[1][0], grid[1][1], grid[1][2]]).to.deep.equal([' ', ' ', ' ']);
 
       });
 
@@ -59,9 +58,9 @@ describe ('Bejeweled', function () {
                 ['🥥', '🥥', '🍊'],
                 ['🥥', '🍇', '🍋']]
 
-        expect(Bejeweled.checkForMatches(grid)).to.be.true;
+        expect(Bejeweled.checkForMatches(grid)).to.deep.equal([{row: 1, col: 0}, {row: 2, col: 0}, {row: 3, col: 0}]);
         Bejeweled.deleteFruits(grid);
-        expect([grid[1][0], grid[2][0], grid[3][0]]).to.be.equal([' ', ' ', ' ']);
+        expect([grid[1][0], grid[2][0], grid[3][0]]).to.deep.equal([' ', ' ', ' ']);
 
       })
     })
@@ -73,9 +72,9 @@ describe ('Bejeweled', function () {
       grid = [['🥥', '🍋', '🍊', '🍇'],
               ['🍓', '🍓', '🍓', '🍓']]
 
-      expect(Bejeweled.checkForMatches(grid)).to.be.true;
+      expect(Bejeweled.checkForMatches(grid)).to.deep.equal([{row: 1, col: 0}, {row: 1, col: 1}, {row: 1, col: 2}, {row: 1, col: 3}]);
       Bejeweled.deleteFruits(grid);
-      expect([grid[1][0], grid[1][1], grid[1][2], grid[1][3]]).to.be.equal([' ', ' ', ' ', ' ']);
+      expect([grid[1][0], grid[1][1], grid[1][2], grid[1][3]]).to.deep.equal([' ', ' ', ' ', ' ']);
 
     });
 
@@ -84,9 +83,9 @@ describe ('Bejeweled', function () {
       grid = [['🥥', '🍋', '🍊', '🍇', '🥥'],
               ['🍓', '🍓', '🍓', '🍓', '🍓']]
 
-      expect(Bejeweled.checkForMatches(grid)).to.be.true;
+      expect(Bejeweled.checkForMatches(grid)).to.deep.equal([{row: 1, col: 0}, {row: 1, col: 1}, {row: 1, col: 2}, {row: 1, col: 3}, {row: 1, col: 4}]);
       Bejeweled.deleteFruits(grid);
-      expect([grid[1][0], grid[1][1], grid[1][2], grid[1][3], grid[1][4]]).to.be.equal([' ', ' ', ' ', ' ', ' ']);
+      expect([grid[1][0], grid[1][1], grid[1][2], grid[1][3], grid[1][4]]).to.deep.equal([' ', ' ', ' ', ' ', ' ']);
 
     });
 
@@ -98,9 +97,9 @@ describe ('Bejeweled', function () {
               ['🥥', '🥥', '🍊'],
               ['🥥', '🍇', '🍋']]
 
-      expect(Bejeweled.checkForMatches(grid)).to.be.true;
+      expect(Bejeweled.checkForMatches(grid)).to.deep.equal([{row: 1, col: 0}, {row: 2, col: 0}, {row: 3, col: 0}, {row: 4, col: 0}]);
       Bejeweled.deleteFruits(grid);
-      expect([grid[1][0], grid[2][0], grid[3][0], grid[4][0]]).to.be.equal([' ', ' ', ' ', ' ']);
+      expect([grid[1][0], grid[2][0], grid[3][0], grid[4][0]]).to.deep.equal([' ', ' ', ' ', ' ']);
 
     });
 
@@ -113,29 +112,26 @@ describe ('Bejeweled', function () {
               ['🥥', '🍇', '🍋'],
               ['🥥', '🍇', '🍋']]
 
-      expect(Bejeweled.checkForMatches(grid)).to.be.true;
+      expect(Bejeweled.checkForMatches(grid)).to.deep.equal([{row: 1, col: 0}, {row: 2, col: 0}, {row: 3, col: 0}, {row: 4, col: 0}, {row: 5, col: 0}]);
       Bejeweled.deleteFruits(grid);
-      expect([grid[1][0], grid[2][0], grid[3][0], grid[4][0], grid[5][0]]).to.be.equal([' ', ' ', ' ', ' ', ' ']);
+      expect([grid[1][0], grid[2][0], grid[3][0], grid[4][0], grid[5][0]]).to.deep.equal([' ', ' ', ' ', ' ', ' ']);
 
     });
 
   })
 
   // Add tests for swaps that set up combos
-  //When the fruits fall down and make a new match, it registers as a combo
   describe('Combo Tests', function(){
 
-    //1. Existing fruits should shift down to the blank spaces left by matched fruits
     it('should shift fruits down to the empty spaces', function(){
 
       grid = [['🥥', '🍋', '🍊'],
               [' ', ' ', ' ']]
 
       Bejeweled.shiftFruits(grid);
-      expect([grid[1][0], grid[1][1], grid[1][2]]).to.be.equal(['🥥', '🍋', '🍊']);
+      expect([grid[1][0], grid[1][1], grid[1][2]]).to.deep.equal(['🥥', '🍋', '🍊']);
     });
 
-    //2. When the shifted fruits make a match, add it to the combo counter
     it('should recognize combos when fruits fall to make a match', function(){
 
       grid = [['🍓', '🍊', '🍊'],
@@ -143,7 +139,7 @@ describe ('Bejeweled', function () {
               ['🥥', '🥥', '🍊'],
               ['🥥', '🍓', '🍓']]
 
-      Bejeweled.checkForMatches(grid); //true
+      Bejeweled.checkForMatches(grid); //array of objects of rows and cols
       Bejeweled.deleteFruits(grid); //delete coconut matched fruits
       Bejeweled.shiftFruits(grid); //shift strawberry to grid[3][0]
       expect(Bejeweled.checkForCombos(grid)).to.be.true;
@@ -151,7 +147,6 @@ describe ('Bejeweled', function () {
 
     });
 
-    //3. If there are no more extra matches after putting new fruits, reset the combo counter
     it('should reset the combo counter after all empty spaces are filled', function(){
 
       grid = [['🍓', '🍊', '🍊'],
