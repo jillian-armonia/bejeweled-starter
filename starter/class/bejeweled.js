@@ -19,6 +19,8 @@ class Bejeweled {
     Screen.render();
   }
 
+  static comboCounter = 0;
+
   static checkForMatches(grid) {
     const checkHorizontal = (matchNum) => {
       let endNum = matchNum - 1;
@@ -65,7 +67,7 @@ class Bejeweled {
       let endNum = matchNum - 1;
 
       for(let rowNum = 0; rowNum < grid.length - endNum; rowNum++){
-        for(let colNum = 0; colNum < grid[rowNum].length - 1; colNum++){
+        for(let colNum = 0; colNum < grid[rowNum].length; colNum++){
           let fruit = grid[rowNum][colNum];
           let fruit2 = grid[rowNum + 1][colNum];
           let fruit3 = grid[rowNum + 2][colNum];
@@ -119,6 +121,8 @@ class Bejeweled {
         }
       }
     }
+
+    return;
   }
 
   static deleteFruits(grid){
@@ -132,9 +136,37 @@ class Bejeweled {
   }
 
   static shiftFruits(grid){
-    //1. Iterate the grid from the bottom
+    let match = Bejeweled.checkForMatches(grid);
+
+    for(let rowNum = 0; rowNum < grid.length - 1; rowNum++){
+      for (let colNum = 0; colNum < grid[rowNum].length; colNum++){
+        let fruit = grid[rowNum][colNum];
+        let fruitBelow = grid[rowNum + 1][colNum];
+
+        if (fruit !== ' ' && fruitBelow === ' '){
+          grid[rowNum + 1][colNum] = fruit;
+          grid[rowNum][colNum] = fruitBelow;
+        }
+      }
+    }
+
+    Bejeweled.putFruits(grid);
+
+    if (match !== false){
+      Bejeweled.comboCounter++;
+      Bejeweled.deleteFruits(grid);
+      Bejeweled.shiftFruits(grid);
+    } else {
+      Bejeweled.comboCounter = 0;
+    }
+  }
+
+  static getCombo(){
+    return Bejeweled.comboCounter;
   }
 
 }
+
+
 
 module.exports = Bejeweled;
