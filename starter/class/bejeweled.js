@@ -138,6 +138,10 @@ class Bejeweled {
   static shiftFruits(grid){
     let match = Bejeweled.checkForMatches(grid);
 
+    if (grid.length === 1){
+      Bejeweled.putFruits(grid);
+    }
+
     for(let rowNum = 0; rowNum < grid.length - 1; rowNum++){
       for (let colNum = 0; colNum < grid[rowNum].length; colNum++){
         let fruit = grid[rowNum][colNum];
@@ -146,11 +150,12 @@ class Bejeweled {
         if (fruit !== ' ' && fruitBelow === ' '){
           grid[rowNum + 1][colNum] = fruit;
           grid[rowNum][colNum] = fruitBelow;
-        }
+        };
+
+        Bejeweled.shiftFruits(grid.slice(0, grid.length - 1));
       }
     }
 
-    Bejeweled.putFruits(grid);
 
     if (match !== false){
       Bejeweled.comboCounter++;
@@ -163,6 +168,131 @@ class Bejeweled {
 
   static getCombo(){
     return Bejeweled.comboCounter;
+  }
+
+  static validMoves(grid){
+    const findFruitH = (fruit, row, col) => {
+      let before = col - 1;
+      let before2 = col - 2;
+      let after = col + 2;
+      let after2 = col + 3
+      let top = row - 1;
+      let bottom = row + 1;
+
+      if (before >= 0 && bottom <= grid.length - 1){
+        return grid[bottom][before] === fruit;
+      } else if (before >= 0 && top >= 0){
+        return grid[top][before] === fruit;
+      }
+
+      if (after < grid[row].length && bottom <= grid.length - 1){
+        return grid[bottom][after] === fruit;
+      } else if (after < grid[row].length && top >= 0){
+        return grid[top][after] === fruit;
+      }
+
+      if (before2 >= 0){
+        return grid[row][before2] === fruit;
+      } else if (after2 < grid[row].length){
+        return grid[row][after2] === fruit;
+      }
+
+    }
+
+    const findFruitV = (fruit, row, col) => {
+      let before = col - 1;
+      let after = col + 2;
+      let top = row - 1;
+      let top2 = row - 2;
+      let bottom = row + 1;
+      let bottom2 = row + 2;
+
+      if (top2 >= 0){
+        return grid[top2][col] === fruit;
+      } else if (bottom2 < grid.length){
+        return grid[bottom2][col] === fruit;
+      }
+
+      if(top >= 0 && before >= 0){
+        return grid[top][before] === fruit;
+      } else if (top >= 0 && after < grid[row].length){
+        return grid[top][after] === fruit;
+      }
+
+      if (bottom < grid.length && before >= 0){
+        return grid[bottom][before] === fruit;
+      } else if(bottom < grid.length && after < grid[row].length){
+        return grid[bottom][after] === fruit;
+      }
+    }
+    //Check for potential horizontal matches
+    for(let rowNum = 0; rowNum < grid.length; rowNum++){
+      for(let colNum = 0; colNum < grid[rowNum].length - 1; colNum++){
+        let fruit = grid[rowNum][colNum];
+        let fruit2 = grid[rowNum][colNum + 1];
+
+      if (fruit === fruit2){
+        if (findFruitH(fruit, rowNum, colNum)){
+          return true;
+        }
+      }
+      }
+    }
+
+      //2. Check if there is the same fruit one space away from each other and checking if the row above and beneath the middle fruit is the same fruit
+      for(let rowNum = 0; rowNum < grid.length; rowNum++){
+        for(let colNum = 0; colNum < grid[rowNum].length - 2; colNum++){
+          let fruit = grid[rowNum][colNum];
+          let fruit2 = grid[rowNum][colNum + 2];
+
+        if (fruit === fruit2){
+          let top = rowNum - 1;
+          let bottom = rowNum + 1;
+
+          if (top >= 0 && grid[top][colNum + 1] === fruit){
+            return true;
+          } else if (bottom < grid.length && grid[bottom][colNum + 1] === fruit){
+            return true;
+          }
+        }
+        }
+      }
+
+    //Check for potential vertical matches
+      //1. Checking for pairs and checking if the same fruit is one space away from the pair
+      for (let rowNum = 0; rowNum < grid.length - 1; rowNum++){
+        for (let colNum = 0; colNum < grid[rowNum].length; colNum++){
+          let fruit = grid[rowNum][colNum];
+          let fruit2 = grid[rowNum + 1][colNum];
+
+          if (fruit === fruit2){
+            if (findFruitV) {
+              return true;
+            }
+          }
+        }
+      }
+      //2. Check if there is the same fruit one space away from each other and checking if the columns beside the middle fruit is the same fruit
+      for(let rowNum = 0; rowNum < grid.length - 2; rowNum++){
+        for(let colNum = 0; colNum < grid[rowNum].length; colNum++){
+          let fruit = grid[rowNum][colNum];
+          let fruit2 = grid[rowNum + 2][colNum];
+
+          if (fruit === fruit2){
+            let before = colNum - 1;
+            let after = colNum + 1;
+            let between = rowNum + 1;
+
+            if (before >= 0 && grid[between][before] === fruit){
+              return true;
+            } else if (after < grid[rowNum].length && grid[between][after] === fruit){
+              return true;
+            }
+          }
+        }
+      }
+
+      return false;
   }
 
 }

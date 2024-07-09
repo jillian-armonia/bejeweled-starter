@@ -142,7 +142,6 @@ describe ('Bejeweled', function () {
       Bejeweled.checkForMatches(grid); //array of objects of rows and cols
       Bejeweled.deleteFruits(grid); //delete coconut matched fruits
       Bejeweled.shiftFruits(grid); //shift strawberry to grid[3][0]
-      console.log(grid);
       expect(Bejeweled.getCombo()).to.not.equal(0);
 
     });
@@ -163,6 +162,47 @@ describe ('Bejeweled', function () {
   // Add tests to check if there are no possible valid moves
   describe('Game Over Tests', function(){
 
+    it('should recognize a possible move for horizontal pairs', function(){
+
+      grid = [['🍓', '🍊', '🍊'],
+               ['🍊', '🥝', '🥥'],
+               ['🥝', '🥥', '🍇'],
+               ['🥥', '🍇', '🍋']]
+
+      expect(Bejeweled.validMoves(grid)).to.be.true;//top orange row
+    });
+
+    it('should recognize a possible move when the same fruit is one space away from each other', function(){
+
+      grid = [['🍓', '🍇', '🍊'],
+               ['🥥', '🥝', '🥥'],
+               ['🥝', '🥥', '🍊'],
+               ['🍋', '🍇', '🍋']]
+
+      expect(Bejeweled.validMoves(grid)).to.be.true; //2nd row coconuts
+    })
+
+    it('should recognize a possible move for vertical pairs', function(){
+
+      grid = [['🍓', '🍋', '🍊'],
+              ['🥥', '🍇', '🥥'],
+              ['🥝', '🍓', '🍊'],
+              ['🥥', '🥝', '🍊'],
+              ['🍓', '🍇', '🍋']]
+
+      expect(Bejeweled.validMoves(grid)).to.be.true; //last col oranges
+    })
+
+    it('should recognize a possible move when the same fruit is one space away from each other', function(){
+
+      grid = [['🍓', '🍊', '🍋'],
+              ['🥥', '🥝', '🍇'],
+              ['🥝', '🥥', '🍊'],
+              ['🥥', '🍇', '🍋']]
+
+      expect(Bejeweled.validMoves(grid)).to.be.true; //1st coconut col
+    })
+
     it('should be game over if there are no more valid moves', function(){
 
       grid = [['🥥', '🥝', '🍇', '🍋', '🍊', '🥥', '🍊', '🍓'],
@@ -179,20 +219,6 @@ describe ('Bejeweled', function () {
 
     });
 
-    // it('should check if the grid has pairs of fruits', function(){
-
-    //   grid = [['🥥', '🥝', '🍇', '🍋', '🍊', '🥥', '🍊', '🍓'],
-    //           ['🥝', '🥥', '🍋', '🍓', '🥝', '🍓', '🍇', '🥥'],
-    //           ['🍊', '🥝', '🥥', '🍇', '🍊', '🥝', '🥥', '🍊'],
-    //           ['🍋', '🍊', '🥝', '🥥', '🍇', '🥥', '🍇', '🍋'],
-    //           ['🍓', '🍋', '🍊', '🥝', '🥥', '🍓', '🍋', '🍊'],
-    //           ['🥝', '🍓', '🍋', '🍊', '🥝', '🥥', '🥝', '🍇'],
-    //           ['🍇', '🥥', '🍓', '🍋', '🍊', '🍓', '🥥', '🍊'],
-    //           ['🍋', '🍓', '🍇', '🍓', '🍋', '🍇', '🍋', '🥥']];
-
-    //   expect(Bejeweled.checkPairs(grid)).to.be.false;
-
-    // });
   })
 
 
