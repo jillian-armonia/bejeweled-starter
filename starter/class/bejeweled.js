@@ -12,6 +12,7 @@ class Bejeweled {
 
     this.cursor = new Cursor(8, 8);
 
+
     Screen.initialize(8, 8);
     Screen.setGridlines(false);
 

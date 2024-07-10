@@ -75,11 +75,12 @@ describe ('Cursor', function () {
 
     cursor.select();
     expect(cursor.swapMode).to.be.true;
-    expect(Bejeweled.selectFruit(grid)).to.be.equal({row: 0, col: 0});
+    expect(cursor.selected).to.deep.equal({row: 0, col: 0});
   });
 
   it('can only move one space from the selected item when swapping', function(){
 
+    cursor.selected = {row: 0, col: 0}
     cursor.swapMode = true;
 
     cursor.right();
@@ -87,6 +88,25 @@ describe ('Cursor', function () {
 
     cursor.right();
     expect([cursor.row, cursor.col]).to.deep.equal([0, 1]);
+
+    cursor.left();
+    expect([cursor.row, cursor.col]).to.deep.equal([0, 0]);
+
+    cursor.left();
+    expect([cursor.row, cursor.col]).to.deep.equal([0, 0]);
+
+    cursor.up();
+    expect([cursor.row, cursor.col]).to.deep.equal([0, 0]);
+
+    cursor.down();
+    expect([cursor.row, cursor.col]).to.deep.equal([1, 0]);
+
+    cursor.down();
+    expect([cursor.row, cursor.col]).to.deep.equal([1, 0]);
+
+    cursor.right();
+    expect([cursor.row, cursor.col]).to.deep.equal([1, 0]);
+
   });
 
   it('processes the swap if it is a match', function(){
@@ -97,15 +117,14 @@ describe ('Cursor', function () {
 
     cursor.swapMode = true;
     cursor.select();
-    Bejeweled.selectFruit(grid); //{row: 0, col: 0}
+    cursor.right();
 
-    cursor.swap(); //swap with the coconut on the right
-    expect(Bejeweled.checkForMatches(grid)).to.be.true;
+    cursor.swap(grid); //swap with the coconut on the right
+    expect(Bejeweled.checkForMatches(grid)).to.deep.equal([{row: 0, col:0}, {row: 1, col: 0}, {row: 2, col: 0}]);
     expect(cursor.swapMode).to.be.false;
-    expect(grid[0][0]).to.be.equal(' ');
   });
 
-  it('should throw an error if it is not a match', function(){
+  it('should swap back if it is not a match', function(){
 
     let grid = [['🥥', '🍋', '🍊'],
                 ['🍓', '🍇', '🍓'],
@@ -113,11 +132,11 @@ describe ('Cursor', function () {
 
     cursor.swapMode = true;
     cursor.select();
-    Bejeweled.selectFruit(grid); //{row: 0, col: 0}
+    cursor.down();
 
-    cursor.swap(); //swap with the lemon on the left
+    cursor.swap(grid); //swap with the strawberry on the bottom
     expect(Bejeweled.checkForMatches(grid)).to.be.false;
-    expect(cursor.swap()).to.throw(Error, 'No match');
+    expect(grid[0][0]).to.deep.equal('🥥');
   });
 
 
