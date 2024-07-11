@@ -39,11 +39,15 @@ class Bejeweled {
     Screen.addCommand('s', 'swap', this.processSwap.bind(this, this.grid));
 
     this.cursor.setBackgroundColor();
-    Screen.setMessage("Press 'enter' to select a fruit.\nPress 's' to execute swap.")
+    Screen.setMessage(`Press 'enter' to select a fruit.\nPress 's' to execute swap.\nScore: ${Bejeweled.totalScore}`)
     Screen.render();
   }
 
   static comboCounter = 0;
+
+  static score = 0;
+
+  static totalScore = 0;
 
   static checkForMatches(grid) {
     const checkHorizontal = (matchNum) => {
@@ -80,10 +84,13 @@ class Bejeweled {
 
 
     if (checkHorizontal(5)){
+      Bejeweled.score += 500;
       return checkHorizontal(5);
     } else if (checkHorizontal(4)){
+      Bejeweled.score += 400;
       return checkHorizontal(4);
     } else if (checkHorizontal(3)){
+      Bejeweled.score += 300;
       return checkHorizontal(3);
     }
 
@@ -120,10 +127,13 @@ class Bejeweled {
     }
 
     if (checkVertical(5)){
+      Bejeweled.score += 500;
       return checkVertical(5);
     } else if (checkVertical(4)){
+      Bejeweled.score += 400;
       return checkVertical(4);
     } else if (checkVertical(3)){
+      Bejeweled.score += 300;
       return checkVertical(3);
     }
 
@@ -157,9 +167,11 @@ class Bejeweled {
       match.forEach(fruit => {
         grid[fruit.row][fruit.col] = ' ';
         Screen.setGrid(fruit.row, fruit.col, ' ');
+        Screen.setMessage(`Score: ${Bejeweled.score}`);
         Screen.render();
       })
     }
+
   }
 
   static shiftFruits(grid){
@@ -192,9 +204,13 @@ class Bejeweled {
       Bejeweled.comboCounter++;
       Bejeweled.deleteFruits(grid);
       Bejeweled.shiftFruits(grid);
+      Screen.setMessage(`Last combo count: ${Bejeweled.getCombo()}\nScore: ${Bejeweled.totalScore}`);
     } else {
-      Bejeweled.comboCounter = 0;
+      Bejeweled.totalScore += Bejeweled.score * Bejeweled.comboCounter;
+      Bejeweled.score = 0;
     }
+
+
 
     return
   }
@@ -329,6 +345,7 @@ class Bejeweled {
   }
 
   processSwap(grid){
+    Bejeweled.comboCounter = 0;
     if (this.cursor.swapMode){
       this.cursor.swap(grid);
 
