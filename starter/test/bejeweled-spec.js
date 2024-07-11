@@ -142,6 +142,7 @@ describe ('Bejeweled', function () {
       Bejeweled.checkForMatches(grid); //array of objects of rows and cols
       Bejeweled.deleteFruits(grid); //delete coconut matched fruits
       Bejeweled.shiftFruits(grid); //shift strawberry to grid[3][0]
+      console.log(grid);
       expect(Bejeweled.getCombo()).to.not.equal(0);
 
     });

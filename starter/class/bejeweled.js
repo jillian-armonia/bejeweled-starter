@@ -10,13 +10,36 @@ class Bejeweled {
     // Initialize this
     this.grid = [];
 
-    this.cursor = new Cursor(8, 8);
+    for (let row = 0; row < 6; row++){
+      this.grid.push(new Array(6).fill(' '));
+    }
+
+    this.cursor = new Cursor(6, 6);
 
 
-    Screen.initialize(8, 8);
+    Screen.initialize(6, 6);
     Screen.setGridlines(false);
 
+    Bejeweled.putFruits(this.grid);
+
+    if (Bejeweled.checkForMatches(this.grid)){
+      Bejeweled.shiftFruits(this.grid);
+    }
+
+    if (!Bejeweled.validMoves(this.grid)){
+      Screen.quit();
+    }
+
+
+    Screen.addCommand('up', 'move up', this.cursor.up.bind(this.cursor));
+    Screen.addCommand('down', 'move down', this.cursor.down.bind(this.cursor));
+    Screen.addCommand('left', 'move left', this.cursor.left.bind(this.cursor));
+    Screen.addCommand('right', 'move right', this.cursor.right.bind(this.cursor));
+    Screen.addCommand('return', 'select fruit', this.cursor.select.bind(this.cursor));
+    Screen.addCommand('s', 'swap', this.processSwap.bind(this, this.grid));
+
     this.cursor.setBackgroundColor();
+    Screen.setMessage("Press 'enter' to select a fruit.\nPress 's' to execute swap.")
     Screen.render();
   }
 
@@ -119,6 +142,7 @@ class Bejeweled {
 
           grid[rowNum][colNum] = randomFruit;
           Screen.setGrid(rowNum, colNum, randomFruit);
+          Screen.render();
         }
       }
     }
@@ -132,8 +156,10 @@ class Bejeweled {
     if (match !== false){
       match.forEach(fruit => {
         grid[fruit.row][fruit.col] = ' ';
+        Screen.setGrid(fruit.row, fruit.col, ' ');
+        Screen.render();
       })
-    } else return;
+    }
   }
 
   static shiftFruits(grid){
@@ -150,7 +176,11 @@ class Bejeweled {
 
         if (fruit !== ' ' && fruitBelow === ' '){
           grid[rowNum + 1][colNum] = fruit;
-          grid[rowNum][colNum] = fruitBelow;
+          grid[rowNum][colNum] = ' ';
+
+          Screen.setGrid(rowNum + 1, colNum, fruit);
+          Screen.setGrid(rowNum, colNum, ' ');
+          Screen.render();
         };
 
         Bejeweled.shiftFruits(grid.slice(0, grid.length - 1));
@@ -165,6 +195,8 @@ class Bejeweled {
     } else {
       Bejeweled.comboCounter = 0;
     }
+
+    return
   }
 
   static getCombo(){
@@ -295,6 +327,35 @@ class Bejeweled {
 
       return false;
   }
+
+  processSwap(grid){
+    if (this.cursor.swapMode){
+      this.cursor.swap(grid);
+
+    const cancelSwap = () => {
+      this.cursor.swapMode = false;
+      this.cursor.gridColor = "black";
+      this.cursor.cursorColor = "yellow";
+
+      this.cursor.setSwapColor();
+      Screen.setBackgroundColor(this.cursor.selected.row, this.cursor.selected.col, this.cursor.gridColor);
+      this.cursor.setBackgroundColor();
+      Screen.render();
+      return;
+    }
+
+    if (Bejeweled.checkForMatches(grid)){
+      Bejeweled.shiftFruits(grid);
+      cancelSwap();
+      if (!Bejeweled.validMoves(grid)){
+        Screen.quit();
+      }
+    } else {
+      this.cursor.swap(grid);
+      cancelSwap();
+    }
+  }
+    }
 
 }
 

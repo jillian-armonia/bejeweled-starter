@@ -25,9 +25,30 @@ class Cursor {
     Screen.setBackgroundColor(this.row, this.col, this.cursorColor);
   }
 
+  setSwapColor(){
+    if (this.selected.row + 1 < this.numRows){
+      Screen.setBackgroundColor(this.selected.row + 1, this.selected.col, this.gridColor);
+    }
+
+    if (this.selected.row - 1 >= 0){
+      Screen.setBackgroundColor(this.selected.row - 1, this.selected.col, this.gridColor);
+    }
+
+    if (this.selected.col + 1 < this.numCols){
+      Screen.setBackgroundColor(this.selected.row, this.selected.col + 1, this.gridColor);
+    }
+
+    if (this.selected.col - 1 >= 0){
+      Screen.setBackgroundColor(this.selected.row, this.selected.col - 1, this.gridColor);
+    }
+
+  }
+
   up() {
+    this.resetBackgroundColor();
+
     if (this.swapMode && this.col === this.selected.col){
-      if (this.row >= this.selected.col && this.col <= this.selected.col + 1 && this.row > 0){
+      if (this.row >= this.selected.row && this.row <= this.selected.row + 1 && this.row > 0){
         this.row--;
       }
     } else if (!this.swapMode){
@@ -36,9 +57,12 @@ class Cursor {
       }
     }
 
+    this.setBackgroundColor();
+    Screen.render();
   }
 
   down() {
+    this.resetBackgroundColor();
     if (this.swapMode && this.col === this.selected.col){
       if(this.row >= this.selected.row - 1 && this.row <= this.selected.row && this.row < this.numRows - 1){
         this.row++;
@@ -49,11 +73,13 @@ class Cursor {
       }
     }
 
-
-
+    this.setBackgroundColor();
+    Screen.render();
   }
 
   left() {
+    this.resetBackgroundColor();
+
     if (this.swapMode && this.row === this.selected.row){
       if (this.col >= this.selected.col && this.col <= this.selected.col + 1 && this.col > 0){
         this.col--;
@@ -64,11 +90,13 @@ class Cursor {
       }
     }
 
-
-
+    this.setBackgroundColor();
+    Screen.render();
   }
 
   right() {
+    this.resetBackgroundColor();
+
     if (this.swapMode && this.row === this.selected.row){
       if (this.col >= this.selected.col - 1 && this.col <= this.selected.col && this.col < this.numCols - 1){
         this.col++;
@@ -79,30 +107,42 @@ class Cursor {
       }
     }
 
-
-
+    this.setBackgroundColor();
+    Screen.render();
   }
 
   select(){
-    this.swapMode = true;
-    this.selected.row = this.row;
-    this.selected.col = this.col;
+    if (!this.swapMode){
+      this.swapMode = true;
+      this.selected.row = this.row;
+      this.selected.col = this.col;
+
+      this.cursorColor = "magenta";
+      this.gridColor = "cyan";
+
+      this.setSwapColor();
+
+      this.setBackgroundColor();
+      Screen.render();
+    }
+
   }
 
   swap(grid){
-    let selectedFruit = grid[this.selected.row][this.selected.col];
+    if (this.swapMode){
+      let selectedFruit = grid[this.selected.row][this.selected.col];
     let swappingFruit = grid[this.row][this.col];
 
     grid[this.selected.row][this.selected.col] = swappingFruit;
     grid[this.row][this.col] = selectedFruit;
 
-    if (Bejeweled.checkForMatches(grid)){
-      this.swapMode = false;
-    } else {
-      grid[this.selected.row][this.selected.col] = selectedFruit;
-      grid[this.row][this.col] = swappingFruit;
-    }
+    Screen.setGrid(this.selected.row, this.selected.col, swappingFruit);
+    Screen.setGrid(this.row, this.col, selectedFruit);
+    Screen.render();
   }
+
+}
+
 
 }
 
